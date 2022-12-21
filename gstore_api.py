@@ -27,6 +27,10 @@ class GstoreConnector:
 
     @staticmethod
     def error_handling(ret):
+        '''
+        @author zizheng
+        @brief throw an error in case of failure status code
+        '''
         ret = json.loads(ret)
         if ret['StatusCode'] != 0:
             raise GStoreError(ret)

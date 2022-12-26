@@ -1,0 +1,28 @@
+{
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "@ant-design/icons": "latest",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "antd": "5.1.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.5"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "react-scripts --openssl-legacy-provider build",
+    "eject": "react-scripts --openssl-legacy-provider eject",
+    "start": "CHOKIDAR_USEPOLLING=true react-scripts --openssl-legacy-provider start",
+    "test": "react-scripts --openssl-legacy-provider test --env=jsdom"
+  },
+  "title": "The WedIn Project"
+}

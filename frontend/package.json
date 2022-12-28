@@ -23,8 +23,11 @@
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "start": "CHOKIDAR_USEPOLLING=true react-scripts start",
+    "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   },
   "title": "The WedIn Project"
 }

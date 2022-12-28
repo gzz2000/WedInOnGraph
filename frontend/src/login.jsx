@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Button, Checkbox, Form, Input, Menu, Typography } from 'antd';
+import { Layout, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'antd';
 import { LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 
 const LoginForm = () => {
@@ -74,7 +74,7 @@ const RegisterForm = () => {
       </Form.Item>
       
       <Form.Item
-          label="Confirm password"
+          label="Confirm"
           name="password2"
           rules={[{ required: true, message: 'Please type password again to confirm it' }]}
       >
@@ -93,7 +93,7 @@ const RegisterForm = () => {
 const Login = () => {
   const [onRegister, setOnRegister] = useState(true);
   return (
-    <div className="login-box">
+    <Card title="Log in or sign up to continue" style={{margin: '20px'}}>
       <Menu
         mode="horizontal"
         selectedKeys={[onRegister ? 'register' : 'login']}
@@ -125,7 +125,7 @@ const Login = () => {
         }
       </Typography.Paragraph>
       { onRegister ? <RegisterForm /> : <LoginForm /> }
-    </div>
+    </Card>
   )
 };
 

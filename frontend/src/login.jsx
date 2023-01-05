@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Layout, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'antd';
 import { LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   return (
     <Form
       labelCol={{ span: 8 }}
@@ -10,6 +13,18 @@ const LoginForm = () => {
       initialValues={{ remember: true }}
       autoComplete="off"
       style={{ marginTop: '20px' }}
+      onFinish={ (values) => {
+          axios.post('/login',values)
+          .then(function (response){
+            console.log(response);
+            alert("Log in successfully.");
+            navigate(-1);
+          })
+          .catch(function (response){
+            alert("Log in failed.");
+          })
+        }
+      }
     >
       <Form.Item
           label="Username"
@@ -41,6 +56,7 @@ const LoginForm = () => {
 };
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   return (
     <Form
       labelCol={{ span: 8 }}
@@ -48,6 +64,18 @@ const RegisterForm = () => {
       initialValues={{ remember: true }}
       autoComplete="off"
       style={{ marginTop: '20px' }}
+      onFinish={ (values) => {
+          axios.post('/register',values)
+          .then(function (response){
+            console.log(response);
+            alert("Register successfully.");
+            navigate(-1);
+          })
+          .catch(function (response){
+            alert("Register failed.");
+          })
+        }
+      }
     >
       <Form.Item
           label="Username"

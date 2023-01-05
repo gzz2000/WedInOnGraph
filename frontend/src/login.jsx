@@ -72,7 +72,7 @@ const RegisterForm = () => {
       >
         <Input.Password prefix={<LockOutlined />} />
       </Form.Item>
-      
+
       <Form.Item
           label="Confirm"
           name="password2"
@@ -99,7 +99,7 @@ const Login = () => {
         selectedKeys={[onRegister ? 'register' : 'login']}
         onClick={
           e => {
-            if(e.key == 'register') setOnRegister(true);
+            if(e.key === 'register') setOnRegister(true);
             else setOnRegister(false);
           }
         }

@@ -11,7 +11,7 @@ const Home = () => {
     <div style={{ width: '1000px' }}>
       <Row style={{ width: '100%' }}>
         <Col span={16} style={{ padding: '20px' }}>
-          <Alert
+          <Alert /* "you are exploring..." */
             description={
               <>
                 You are exploring all posts on the server
@@ -28,7 +28,7 @@ const Home = () => {
             size="middle"
             style={{ width: '100%' }}
           >
-            <Card
+            <Card  /* "say something..." */
               bodyStyle={{ padding: '0px' }}
             >
               <Row style={{ width: '100%' }}>
@@ -51,6 +51,7 @@ const Home = () => {
                 </Col>
               </Row>
             </Card>
+
             <Title level={3}>All Posts</Title>
             <Card
               size="small"
@@ -70,11 +71,13 @@ const Home = () => {
               >
                 This is a test weibo post! Hit the like button for me!
               </Paragraph>
+
               <div style={{ marginBottom: '-8px', marginLeft: '-8px' }}>
                 <Button type="text" icon={<LikeFilled />} />
                 <a>gzz</a> (you), <a>gzz2</a>
               </div>
             </Card>
+
             <Card
               size="small"
               type="inner"
@@ -91,7 +94,9 @@ const Home = () => {
               </div>
             </Card>
           </Space>
+
         </Col>
+
         <Col span={8} style={{ padding: '20px', paddingLeft: '0px' }}>
           <Card title="Person To Follow" bodyStyle={{ padding: '0px' }}>
             <List
@@ -104,7 +109,7 @@ const Home = () => {
                           size="small"
                           icon={<PlusOutlined />}
                     >Follow</Button>
-                }>
+                } >
                   <div>
                     <UserOutlined /> <b>{user}</b><br />
                     Followed by gzz2

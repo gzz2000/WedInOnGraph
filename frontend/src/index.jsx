@@ -8,6 +8,8 @@ import {
 import Root from './root';
 import Login from './login';
 import Home from './home';
+import Network from './network';
+import Explore from './explore';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,14 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />
+      },
+      {
+        path: '/network',
+        element: <Network />
+      },
+      {
+        path: '/explore',
+        element: <Explore />
       },
       {
         path: '/login',

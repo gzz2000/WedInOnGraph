@@ -1,11 +1,12 @@
 import React from 'react';
 import './index.css';
 import { Breadcrumb, Layout, Menu, Input, Row, Col, Dropdown } from 'antd';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
 
 const Root = () => {
+    const navigate = useNavigate()
   return (
     <Layout className="layout">
       <Header style={{ position: 'sticky', top: 0, zIndex: 1, width: '100%', background: 'white' }}>
@@ -15,10 +16,15 @@ const Root = () => {
             <Menu
               mode="horizontal"
               items={[
-                {key: 'home', label: 'Home'},
-                {key: 'network', label: 'My Network'},
-                {key: 'explore', label: 'Explore'}
+                {key: '/', label: 'Home'},
+                {key: '/network', label: 'My Network'},
+                {key: '/explore', label: 'Explore'}
               ]}
+              onClick = {
+                (item) => {
+                    navigate(item.key, {replace: true})
+                }
+            }
             />
           </Col>
           <Col>
@@ -39,7 +45,7 @@ const Root = () => {
         </Row>
       </Header>
       <Content className="layout-content">
-        <Outlet />
+        <Outlet /* contents of children(home & login) */ />
       </Content>
       <Footer style={{ textAlign: 'center' }}>© 2022 The WedIn (Weibo + LinkedIn) Project. Frontend: React/Ant-Design. Backend: Python/GStore.</Footer>
     </Layout>

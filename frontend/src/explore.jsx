@@ -20,7 +20,7 @@ const Explore = () => {
                 direction="vertical"
             >
                 <Search size="large"
-                        placeholder="Search for people"
+                        placeholder=" Search for people"
                         prefix={<UserOutlined />}
                         allowClear
                         style={{

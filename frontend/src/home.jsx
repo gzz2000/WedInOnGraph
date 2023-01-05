@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Space, Alert, Typography, Button, Input, List } from 'antd';
 import { Link } from "react-router-dom";
-import { UserOutlined, LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { ReloadOutlined, UserOutlined, LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
@@ -52,7 +52,13 @@ const Home = () => {
               </Row>
             </Card>
 
-            <Title level={3}>All Posts</Title>
+            <Title level={3}>
+              All Posts
+              <Button
+                  type="link"
+                  icon={<ReloadOutlined />}
+              >Refresh</Button>
+            </Title>
             <Card
               size="small"
               type="inner"

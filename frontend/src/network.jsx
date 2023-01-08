@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, Space, Layout,Empty, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'antd';
 import { CloseOutlined, MinusOutlined, EditOutlined, PlusOutlined, LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 const { Search } = Input;
 import { Row, Col, Alert,  } from 'antd';
 import { Link } from "react-router-dom";
 import { LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined } from '@ant-design/icons';
+import Service from './service';
 
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
-
 const Network = () => {
-    const username = "gzz"; /** todo*/
-    const email = "abaaba@pku.edu.cn"; /** todo*/
+    const [username, setUsername] = useState("Hello, visitor");
+    const [email, setEmail] = useState("Fail to get email address... QAQ");
+    useEffect(() => {
+        const currentUser = Service.getCurrentUser();
+        if (currentUser) {
+            setUsername(currentUser);
+            Service.getUserEmail(currentUser).then( res => { setEmail(res); } );
+        }
+    });
     return (
         <div>
             <Card
@@ -42,8 +49,8 @@ const Network = () => {
                     >
                         {/**
                          todo: list of cards
-                         hint: maybe use .map() in Javascript.
-                         */}
+                            hint: maybe use .map() in Javascript.
+                            */}
                         <List
                             itemLayout="horizontal"
                             dataSource={['gzz3', 'gzz4']}

@@ -3,9 +3,24 @@ import { Layout, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'a
 import { LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Service from './service';
 
 const LoginForm = () => {
+
   const navigate = useNavigate();
+
+  const HandleLogin = (values) => {
+    Service.Login(values)
+    .then(response => {
+      alert("Log in successfully.");
+      navigate("/network");
+      window.location.reload();
+    })
+    .catch(response => {
+      alert("Log in failed.");
+    })
+  }
+
   return (
     <Form
       labelCol={{ span: 8 }}
@@ -13,18 +28,7 @@ const LoginForm = () => {
       initialValues={{ remember: true }}
       autoComplete="off"
       style={{ marginTop: '20px' }}
-      onFinish={ (values) => {
-          axios.post('/login',values)
-          .then(function (response){
-            console.log(response);
-            alert("Log in successfully.");
-            navigate(-1);
-          })
-          .catch(function (response){
-            alert("Log in failed.");
-          })
-        }
-      }
+      onFinish={ HandleLogin }
     >
       <Form.Item
           label="Username"
@@ -56,7 +60,21 @@ const LoginForm = () => {
 };
 
 const RegisterForm = () => {
+  
   const navigate = useNavigate();
+
+  const HandleRegister = (values) => {
+    Service.Register(values)
+    .then(function (response){
+      alert("Register successfully.");
+      navigate("/network");
+      window.location.reload();
+    })
+    .catch(function (response){
+      alert("Register failed.");
+    })
+  }
+
   return (
     <Form
       labelCol={{ span: 8 }}
@@ -64,18 +82,7 @@ const RegisterForm = () => {
       initialValues={{ remember: true }}
       autoComplete="off"
       style={{ marginTop: '20px' }}
-      onFinish={ (values) => {
-          axios.post('/register',values)
-          .then(function (response){
-            console.log(response);
-            alert("Register successfully.");
-            navigate(-1);
-          })
-          .catch(function (response){
-            alert("Register failed.");
-          })
-        }
-      }
+      onFinish={ HandleRegister }
     >
       <Form.Item
           label="Username"

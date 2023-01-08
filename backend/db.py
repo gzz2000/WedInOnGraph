@@ -99,6 +99,21 @@ def list_all_posts(limit=100, offset=0):
     <weibo:post_time> ?time \
     }} LIMIT {limit} OFFSET {offset} ORDER BY ?time DESC')
 
+@validate_parameters
+def list_followed_users(username: is_username(str)):
+    # todo
+    return "abaaba@pku.edu.cn"
+
+@validate_parameters
+def list_follower_users(username: is_username(str)):
+    # todo
+    return "abaaba@pku.edu.cn"
+
+@validate_parameters
+def user_email(username: is_username(str)):
+    # todo
+    return "abaaba@pku.edu.cn"
+
 def init_sample_data():
     add_user('gzz', '123456', 'gzz_2000@126.com')
     add_user('gzz2', '123456', 'gzz_2000@127.com')

@@ -15,10 +15,34 @@ def register():
     ret = add_user(params["username"], params["password"], params["email"])
     return params["username"]
 
+@app.route("/editInfo", methods=["POST"])
+def editInfo():
+    params = request.get_json()
+    ret = edit_info(params["username"], params["password"], params["email"])
+    return params["username"]
+
 @app.route("/addPost", methods=["POST"])
 def addPost():
     params = request.get_json()
     ret = add_post(params["username"], params["post"])
+    return params["username"]
+
+@app.route("/delPost", methods=["POST"])
+def delPost():
+    params = request.get_json()
+    ret = del_post(params["username"], params["postid"])
+    return params["username"]
+
+@app.route("/setFollow", methods=["POST"])
+def setFollow():
+    params = request.get_json()
+    ret = set_follow(params["me"], params["other"])
+    return params["username"]
+
+@app.route("/setFollow", methods=["POST"])
+def setunFollow():
+    params = request.get_json()
+    ret = set_unfollow(params["me"], params["other"])
     return params["username"]
 
 @app.route("/getUserEmail", methods=["GET"])
@@ -41,6 +65,17 @@ def getFollower():
 def getPosts():
     usr = request.args.get("username")
     return list_followed_posts(usr)
+
+@app.route("/get2HopUnfollow", methods=["GET"])
+def get2HopUnfollow():
+    usr = request.args.get("username")
+    return list_2hop_unfollowed_users(usr)
+
+@app.route("/exploreUser", methods=["GET"])
+def exploreUser():
+    usr = request.args.get("username")
+    return search_user(usr)
+
 
 
 if __name__ == '__main__':

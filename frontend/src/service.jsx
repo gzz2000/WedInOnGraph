@@ -17,6 +17,9 @@ class Service {
   Register(values) {
     return axios.post("register", values);
   }
+  EditInfo(values) {
+    return axios.post("editInfo", values);
+  }
 
   getCurrentUser() {
     return JSON.parse(sessionStorage.getItem('user'));
@@ -37,12 +40,25 @@ class Service {
   async getPosts(usr) {
     return axios.get("getPosts?username="+usr);
   }
+  async get2HopUnfollow(usr) {
+    return axios.get("get2HopUnfollow?username="+usr);
+  }
+  async exploreUser(usr) {
+    return axios.get("exploreUser?username="+usr);
+  }
 
   addPost(user, contents) {
     return axios.post("addPost", {username:user, post:contents});
   }
-  delPost(values) {
-    return axios.post("delPost", values);
+  delPost(user, postid) {
+    return axios.post("delPost", {username:user, postid:postid});
+  }
+
+  setFollow(me, other) {
+    return axios.post("setFollow", {me:me, other:other});
+  }
+  setunFollow(me, other) {
+    return axios.post("setunFollow", {me:me, other:other});
   }
 }
 

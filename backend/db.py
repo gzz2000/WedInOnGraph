@@ -101,17 +101,33 @@ def list_all_posts(limit=100, offset=0):
 
 @validate_parameters
 def list_followed_users(username: is_username(str)):
-    # todo
+    # todo: for "network" page, return list of username
     return "abaaba@pku.edu.cn"
 
 @validate_parameters
 def list_follower_users(username: is_username(str)):
-    # todo
+    # todo: for "network" page, return list of username
     return "abaaba@pku.edu.cn"
 
 @validate_parameters
 def user_email(username: is_username(str)):
-    # todo
+    # todo: for "network" page, return email（string)
+    return "abaaba@pku.edu.cn"
+
+@validate_parameters
+def edit_info(username: is_username(str), password: is_password(str),
+             email: is_email(str)):
+    # todo: for "network" page, return email（string)
+    return "abaaba@pku.edu.cn"
+
+@validate_parameters
+def list_2hop_unfollowed_users(username: is_username(str)):
+    # todo: for "home" page, return list of username
+    return "abaaba@pku.edu.cn"
+
+@validate_parameters
+def search_user(username: is_username(str)):
+    # todo: for "explore" page, return username
     return "abaaba@pku.edu.cn"
 
 def init_sample_data():

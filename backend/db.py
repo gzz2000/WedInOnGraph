@@ -117,7 +117,7 @@ def user_email(username: is_username(str)):
 @validate_parameters
 def edit_info(username: is_username(str), password: is_password(str),
              email: is_email(str)):
-    # todo: for "network" page, return email（string)
+    # todo: for "network" page
     return "abaaba@pku.edu.cn"
 
 @validate_parameters

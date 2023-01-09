@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { List, Space, Layout,Empty, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'antd';
-import { CloseOutlined, MinusOutlined, EditOutlined, PlusOutlined, LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { List, Space, Layout,Empty, Button, Checkbox, Form, Input, Menu, Typography, Card, Modal } from 'antd';
+import { CloseOutlined, MailOutlined, LockOutlined, EditOutlined, PlusOutlined, UserOutlined, SmileOutlined } from '@ant-design/icons';
 const { Search } = Input;
-import { Row, Col, Alert,  } from 'antd';
-import { Link } from "react-router-dom";
-import { LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Row, Col } from 'antd';
 import Service from './service';
+import { RegisterForm } from './login';
 
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
 const Network = () => {
-    const [username, setUsername] = useState("Hello, visitor");
-    const [email, setEmail] = useState("Fail to get email address... QAQ");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     useEffect(() => {
         const currentUser = Service.getCurrentUser();
         if (currentUser) {
@@ -20,24 +19,114 @@ const Network = () => {
             Service.getUserEmail(currentUser).then( res => { setEmail(res); } );
         }
     });
+
+    const HandleEditSubmit = (values) => {
+        Service.EditInfo(values)
+        .then(function (response){
+          alert("Update your information successfully.");
+        })
+        .catch(function (response){
+          alert("Update failed.");
+        })
+    }
+
+    const EditInfoForm = () => {
+        return (
+            <Form
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                style={{ marginTop: '20px' }}
+                onFinish={ HandleEditSubmit }
+            >
+                <Form.Item
+                    label="Username"
+                    name="username"
+                    initialValue={username}
+                >
+                    <Input prefix={<UserOutlined />} />
+                </Form.Item>
+                
+                <Form.Item
+                    label="E-mail"
+                    name="email"
+                    initialValue={email}
+                >
+                    <Input prefix={<MailOutlined />} />
+                </Form.Item>
+                
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    hasFeedback
+                >
+                    <Input.Password prefix={<LockOutlined />} />
+                </Form.Item>
+
+                <Form.Item
+                    label="Confirm"
+                    name="password2"
+                    rules={[
+                        ({ getFieldValue }) => ({
+                        validator(_, value) {
+                            if (!value || getFieldValue('password') === value) {
+                            return Promise.resolve();
+                            }
+                            return Promise.reject(new Error('The two passwords that you entered do not match'));
+                        },
+                        }),
+                    ]}
+                    hasFeedback
+                >
+                    <Input.Password prefix={<LockOutlined />} />
+                </Form.Item>
+
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit">
+                    Submit
+                    </Button>
+                </Form.Item>
+            </Form>
+        );
+    }
+
+    const HandleEditInfo = () => {
+        if(!username)
+            Modal.warning({
+                title: 'Please log in or register first!',
+                icon: <SmileOutlined/>
+            });
+        else 
+            Modal.info({
+                title: 'Edit your information and submit',
+                content: (
+                    <div>
+                        <Paragraph>Remain the filed blank to keep the info unchanged.</Paragraph>
+                        <EditInfoForm />
+                    </div>
+                ),
+                cancelText: 'Done',
+            });
+    }
+
     return (
         <div>
             <Card
                 size = "large"
-                title={username}
+                title={username?username:"Hello, visitor"}
                 style={{width: 900, margin: 30}}
                 extra = {
                     <Button
                         icon={<EditOutlined />}
+                        onClick = {HandleEditInfo}
                     >
-                    Edit Introduction
+                    Edit Information
                     </Button>
                 }
             >
                 <Paragraph
                     style={{ fontSize: '16px' , margin:-5}}
                 >
-                    Email: {email}
+                    Email: {email?email:"Fail to get email address... QAQ"}
                 </Paragraph>
             </Card>
             <Row>

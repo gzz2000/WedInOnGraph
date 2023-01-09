@@ -65,12 +65,12 @@ const RegisterForm = () => {
 
   const HandleRegister = (values) => {
     Service.Register(values)
-    .then(function (response){
+    .then(response => {
       alert("Register successfully.");
       navigate("/network");
       window.location.reload();
     })
-    .catch(function (response){
+    .catch(response => {
       alert("Register failed.");
     })
   }
@@ -104,6 +104,7 @@ const RegisterForm = () => {
           label="Password"
           name="password"
           rules={[{ required: true, message: 'Please input password' }]}
+          hasFeedback
       >
         <Input.Password prefix={<LockOutlined />} />
       </Form.Item>
@@ -111,7 +112,21 @@ const RegisterForm = () => {
       <Form.Item
           label="Confirm"
           name="password2"
-          rules={[{ required: true, message: 'Please type password again to confirm it' }]}
+          rules={[
+            {
+              required: true,
+              message: 'Please type password again to confirm it',
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('The two passwords that you entered do not match'));
+              },
+            }),
+          ]}
+          hasFeedback
       >
         <Input.Password prefix={<LockOutlined />} />
       </Form.Item>

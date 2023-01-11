@@ -13,7 +13,7 @@ const time2date = time => {
   return `${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}`;
 }
 
-const PostPanel = ({ isFollowedPosts, title }) => {
+const PostPanel = ({ isFollowedPosts, onesPosts, hideNewPost, title }) => {
   const navigate = useNavigate();
   const {user} = useAuth();
   const [loading, setLoading] = useState(false);
@@ -27,6 +27,14 @@ const PostPanel = ({ isFollowedPosts, title }) => {
     setLoading(true);
     if(isFollowedPosts) {
       let posts = await Service.list_followed_posts(10, 0, user);
+      setPosts(posts);
+    }
+    else if(onesPosts) {
+      let posts = await Service.list_ones_posts(onesPosts.username, 10, 0);
+      for(const post of posts) {
+        post.author = onesPosts.username;
+        post.authornick = onesPosts.nick;
+      }
       setPosts(posts);
     }
     else {
@@ -89,7 +97,7 @@ const PostPanel = ({ isFollowedPosts, title }) => {
       size="middle"
       style={{ width: '100%' }}
     >
-      { user !== null ? (
+      { user !== null && !hideNewPost ? (
           <Card
             bodyStyle={{ padding: '0px' }}
             >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Space, Layout,Empty, Button, Checkbox, Form, Input, Menu, Typography, Card, Skeleton } from 'antd';
+import { List, Space, Layout, Button, Checkbox, Form, Input, Menu, Typography, Card, Skeleton, Empty } from 'antd';
 import { CloseOutlined, MinusOutlined, EditOutlined, PlusOutlined, LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 const { Search } = Input;
 import { Row, Col, Alert,  } from 'antd';
@@ -7,6 +7,8 @@ import { Link, useParams } from "react-router-dom";
 import { LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined } from '@ant-design/icons';
 import Service from './service';
 import { useAuth } from './context_auth';
+import PostPanel from './post_panel';
+import UserPanel from './user_panel';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -15,93 +17,89 @@ const Network = () => {
   const {username} = useParams();
   const [details, setDetails] = useState(null);
 
+  const handleReload = async () => {
+    setDetails(null);
+    const r = await Service.get_user_info(username, currentUser);
+    r.username = username;
+    setDetails(r);
+  };
+
+  useEffect(() => {
+    if(details === null || details.username !== username)
+      handleReload();
+  });
+  
   if(details === null) return (
     <div style={{width: '900px', margin: '20px'}}>
       <Skeleton avatar paragraph={{ rows: 4 }} />
     </div>
   );
-  
+
   return (
-    <div>
-      <Card
-        size = "large"
-        title={username}
-        style={{width: 900, margin: 30}}
-      >
-        <Paragraph
-          style={{ fontSize: '16px' , margin:-5}}
-        >
-          Email: todo...
-        </Paragraph>
-      </Card>
+    <div style={{width: '900px', margin: '20px'}}>
       <Row>
-        <Col span={12}>
+        <Col span={8}>
           <Card
-            title="They follow me:"
-            style={{margin: "0px 30px"}}
-            bodyStyle={{ padding: '0px' }}
+            size = "large"
+            title={username}
           >
-            {/**
-                todo: list of cards
-                hint: maybe use .map() in Javascript.
-              */}
-            <List
-              itemLayout="horizontal"
-              dataSource={['gzz3', 'gzz4']}
-              renderItem={user =>
-                <List.Item
-                  style={{height: 80}}
-                        extra={
-                          <Button
-                            type="text"
-                                  size="small"
-                                  danger={true}
-                                  icon={<PlusOutlined />}
-                            >Follow</Button>
-                        } >
-                  <div>
-                    <UserOutlined /> <b>{user}</b>
-                  </div>
-                </List.Item>
-              }
-            />
+            <Paragraph
+              style={{ fontSize: '16px' , margin:-5}}
+            >
+              <Title level={2}>{details.nick}</Title>
+              <p>E-mail: {details.email}</p>
+            </Paragraph>
           </Card>
         </Col>
-        <Col span={12}>
+        <Col span={8}>
           <Card
-            title="I follow them:"
-            style={{margin: "0px 30px"}}
+            title="Followers"
+            style={{margin: "0px 10px"}}
             bodyStyle={{ padding: '0px' }}
           >
-            {/**
-                todo: list of cards
-                hint: maybe use .map() in Javascript.
-              */}
-            <List
-              itemLayout="horizontal"
-              dataSource={['gzz3', 'gzz4']}
-              renderItem={user =>
-                <List.Item
-                  style={{height: 80}}
-                        extra={
-                          <Button
-                            type="text"
-                                  size="small"
-                                  danger={true}
-                                  icon={<CloseOutlined />}
-                            >Unfollow</Button>
-                        } >
-                  <div>
-                    <UserOutlined /> <b>{user}</b>
-                  </div>
-                </List.Item>
-              }
-            />
+            {
+              details.followers.length <= 1 ? (
+                <Empty />
+              ) : (
+                <UserPanel
+                  hideUsername
+                  excludes={[username]}
+                  results={details.followers}
+                  setResults={followers => {
+                      details.followers = followers;
+                      setDetails(details);
+                  }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card
+            title="Following"
+            bodyStyle={{ padding: '0px' }}
+          >
+            {
+              details.following.length <= 1 ? (
+                <Empty />
+              ) : (
+                <UserPanel
+                  hideUsername
+                  excludes={[username]}
+                  results={details.following}
+                  setResults={following => {
+                      details.following = following;
+                      setDetails(details);
+                  }}
+                />
+              )
+            }
           </Card>
         </Col>
       </Row>
-
-
+      <PostPanel title={`Posts by ${details.nick}`}
+                 onesPosts={details}
+                 hideNewPost />
     </div>
   )
 }

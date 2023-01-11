@@ -9,11 +9,11 @@ body {
 }
 .logo {
   float: left;
-  width: 120px;
-  height: 31px;
+  width: 104px;
+  height: 38px;
   margin: 16px 24px 16px 0;
-  padding: 0px -10px;
-  background: cyan;
+  background-image: url("WedIn.svg");
+  background-size: cover;
 }
 .ant-row-rtl .logo {
   float: right;

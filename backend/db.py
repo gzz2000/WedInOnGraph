@@ -171,6 +171,15 @@ def list_all_posts(limit=100, offset=0):
     return simple_cleanup(ret, ['postid', 'author'])
 
 @validate_parameters
+def list_ones_posts(user: is_username(str), limit=100, offset=0):
+    ret = db_query(f'SELECT ?postid ?content ?time WHERE {{ \
+    ?postid <weibo:posted_by> <weibo:user/{user}>; \
+    <weibo:post_content> ?content; \
+    <weibo:post_time> ?time \
+    }} ORDER BY DESC(?time) LIMIT {int(limit)} OFFSET {int(offset)}')
+    return simple_cleanup(ret, ['postid'])
+
+@validate_parameters
 def search_user(keyword: is_search_keyword(str), limit=100, offset=0):
     ret = db_query(f'SELECT ?username ?nick WHERE {{ \
     ?username <weibo:nick> ?nick . \
@@ -196,37 +205,28 @@ def recommend_2_hop(me: is_username(str), limit=100):
 #     return simple_cleanup(ret, ['username'])
 
 @validate_parameters
-def get_info(username: is_username(str)):
-    return db_query(f'SELECT ?nick ?email WHERE {{ \
+def get_user_info(username: is_username(str)):
+    ret = db_query(f'SELECT ?nick ?email WHERE {{ \
     <weibo:user/{username}> <weibo:nick> ?nick ; \
     <weibo:email> ?email \
     }}')[0]
+    followers = db_query(f'SELECT ?username ?nick WHERE {{ \
+    ?username <weibo:follows> <weibo:user/{username}> ; \
+    <weibo:nick> ?nick \
+    }} LIMIT 10')
+    following = db_query(f'SELECT ?username ?nick WHERE {{ \
+    <weibo:user/{username}> <weibo:follows> ?username. \
+    ?username <weibo:nick> ?nick \
+    }} LIMIT 10')
+    ret['followers'] = simple_cleanup(followers, ['username'])
+    ret['following'] = simple_cleanup(following, ['username'])
+    return ret
 
 @validate_parameters
-def list_followed_users(username: is_username(str)):
-    # todo: for "network" page, return list of username
-    return "abaaba@pku.edu.cn"
-
-@validate_parameters
-def list_follower_users(username: is_username(str)):
-    # todo: for "network" page, return list of username
-    return "abaaba@pku.edu.cn"
-
-@validate_parameters
-def user_email(username: is_username(str)):
-    # todo: for "network" page, return email（string)
-    return "abaaba@pku.edu.cn"
-
-@validate_parameters
-def edit_info(username: is_username(str), password: is_password(str),
-             email: is_email(str)):
-    # todo: for "network" page
-    return "abaaba@pku.edu.cn"
-
-@validate_parameters
-def list_2hop_unfollowed_users(username: is_username(str)):
-    # todo: for "home" page, return list of username
-    return "abaaba@pku.edu.cn"
+def append_relation_curuser(users, cur_username: is_username(str)):
+    for r in users:
+        r['follower'] = check_follow(r['username'], cur_username)
+        r['following'] = check_follow(cur_username, r['username'])
 
 def init_sample_data():
     add_user('gzz', '123456', 'gzz_2000@126.com')

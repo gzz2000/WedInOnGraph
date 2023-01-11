@@ -15,7 +15,7 @@ const Root = () => {
   return (
     <Layout className="layout">
       <Header style={{ position: 'sticky', top: 0, zIndex: 1, width: '100%', background: 'white' }}>
-        <div className="logo">Logo Required</div>
+        <div className="logo"></div>
         <Row justify="space-between">
           <Col style={{width: '400px'}}>
             <Menu
@@ -53,7 +53,7 @@ const Root = () => {
                     }
                   ]
                 }}>
-                  <Link to="/network">
+                  <Link to={`/network/${user.username}`}>
                     <UserOutlined /> {user.username}
                   </Link>
                 </Dropdown>

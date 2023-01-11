@@ -135,6 +135,15 @@ def list_all_posts(params):
         post['thumbups'] = db.list_thumbups(post['postid'])
     return posts
 
+@app.route('/api/list_ones_posts', methods=['POST'])
+@json_io
+def list_ones_posts(params):
+    posts = db.list_ones_posts(
+        params['user'], params['limit'], params['offset'])
+    for post in posts:
+        post['thumbups'] = db.list_thumbups(post['postid'])
+    return posts
+
 @app.route('/api/add_thumbup', methods=['POST'])
 @json_io
 @requires_login
@@ -153,15 +162,23 @@ def search_user(params):
     ret = db.search_user(params['keyword'], params['limit'], params['offset'])
     if 'token' in params:
         user = decode_credential(params['token'])
-        for r in ret:
-            r['follower'] = db.check_follow(r['username'], user['username'])
-            r['following'] = db.check_follow(user['username'], r['username'])
+        db.append_relation_curuser(ret, user['username'])
     return ret
 
 @app.route('/api/recommend_2_hop', methods=['POST'])
 @json_io
 def recommend_2_hop(params):
     return db.recommend_2_hop(params['me'], params['limit'])
+
+@app.route('/api/get_user_info', methods=['POST'])
+@json_io
+def get_user_info(params):
+    ret = db.get_user_info(params['username'])
+    if 'token' in params:
+        user = decode_credential(params['token'])
+        db.append_relation_curuser(ret['followers'], user['username'])
+        db.append_relation_curuser(ret['following'], user['username'])
+    return ret
 
 # @app.route("/get2HopUnfollow", methods=["GET"])
 # def get2HopUnfollow():

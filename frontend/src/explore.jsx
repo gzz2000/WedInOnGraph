@@ -1,68 +1,73 @@
-import React, { useState } from 'react';
-import { List, Space, Layout,Empty, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'antd';
-import { PlusOutlined, LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-const { Search } = Input;
-import { Row, Col, Alert,  } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Alert, Button, List, Card, Skeleton, Empty } from 'antd';
 import { Link } from "react-router-dom";
-import { LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined } from '@ant-design/icons';
-
-const { Title, Paragraph, Text } = Typography;
-const { TextArea } = Input;
+import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import Service from './service';
+import { useAuth } from './context_auth';
+import PostPanel from './post_panel';
+import UserPanel from './user_panel';
 
 const Explore = () => {
+  const {user} = useAuth();
 
+  // copied from Home.
+  const [recommends, setRecommends] = useState(null);
+  
+  const handleRecommendReload = async () => {
+    if(user === null) return;
+    let r = await Service.recommend_2_hop(user.username, 10);
+    for(const u of r) {
+      u.note = `${u.nmiddle} follower(s) you know`;
+    }
+    setRecommends(r);
+  }
 
+  useEffect(() => {
+    handleRecommendReload();
+  }, []);
+  
+  return (
+    <div style={{ width: '1000px' }}>
+      <Row style={{ width: '100%' }}>
+        <Col span={16} style={{ padding: '20px' }}>
+          {user === null &&
+           <Alert
+             description={
+               <>
+                 You are exploring all posts on the server
+                 as a guest user.&nbsp;
+                 <Link to="/login">Log in</Link> to post your own,
+                 and see the activity of the people you follow.
+               </>
+             }
+             type="info"
+             showIcon
+           />
+          }
+          <PostPanel title="All Posts" />
+        </Col>
 
-    return (
-        <div>
-            <Space
-                size={"Large"}
-                direction="vertical"
-            >
-                <Search size="large"
-                        placeholder=" Search for people"
-                        prefix={<UserOutlined />}
-                        allowClear
-                        style={{
-                            width: 700,
-                            margin: 30}}
-                        enterButton
-                />
-                <br/>
-                {/**
-                 todo: edit the following code:
-                    if no user / init state: use "empty";
-                    else: use card (NOTE that there will only be 1 card if we search for username)
-                 */}
-                <Empty
-                    style = {{margin: 150}}
-                />
-                <br/>
-                <Card /*title="Person To Follow" */
-                    style={{margin: 20,  align:"middle"}}
-                    >
-                    <List
-                        itemLayout="horizontal"
-                        dataSource={['gzz3']}
-                        renderItem={user =>
-                            <List.Item extra={
-                                <Button
-                                    type="text"
-                                    size="small"
-                                    icon={<PlusOutlined />}
-                                >Follow</Button>
-                            } style={{height: 40}}
-                            >
-                                <div>
-                                    <UserOutlined /> <b>{user}</b>
-                                </div>
-                            </List.Item>
-                        }
-                    />
-                </Card>
-
-            </Space>
-        </div>
-    )
+        <Col span={8} style={{ padding: '20px', paddingLeft: '0px' }}>
+          <Card title="Person To Follow" bodyStyle={{ padding: '0px' }}>
+            {
+              user === null ? (
+                <Empty description="Log in to see recommendations" />
+              ) : recommends === null ? (
+                <Skeleton paragraph={{ rows: 4 }} />
+              ) : recommends.length === 0 ? (
+                <Empty />
+              ) : (
+                <UserPanel
+                  hideUsername
+                  results={recommends}
+                  setResults={setRecommends} />
+              )
+            }
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  )
 }
+
 export default Explore;

@@ -1,2 +1,4 @@
 parameters-validation
+flask
+python-jose[cryptography]
 

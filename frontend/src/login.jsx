@@ -1,34 +1,40 @@
 import React, { useState } from 'react';
-import { Layout, Button, Checkbox, Form, Input, Menu, Typography, Card } from 'antd';
+import { Layout, Button, Checkbox, Form, Input, Menu, Typography, Card, message, Alert } from 'antd';
 import { LoginOutlined, UserOutlined, UsergroupAddOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Service from './service';
+import { useAuth } from './context_auth';
 
 const LoginForm = () => {
-
   const navigate = useNavigate();
+  const {user, setUser} = useAuth();
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
-  const HandleLogin = (values) => {
-    Service.Login(values)
-    .then(response => {
-      alert("Log in successfully.");
-      navigate("/network");
-      window.location.reload();
-    })
-    .catch(response => {
-      alert("Log in failed.");
-    })
-  }
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      let u = await Service.login({
+        username: form.getFieldValue('username'),
+        password: form.getFieldValue('password'),
+        remember: form.getFieldValue('remember'),
+      });
+      message.success(`Welcome back, ${u.username}.`);
+      setUser(u);
+      navigate('/');
+    }
+    catch(e) {}
+    setLoading(false);
+  };
 
   return (
     <Form
+      form={form}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
       autoComplete="off"
       style={{ marginTop: '20px' }}
-      onFinish={ HandleLogin }
     >
       <Form.Item
           label="Username"
@@ -51,7 +57,7 @@ const LoginForm = () => {
       </Form.Item>
       
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" onClick={handleLogin} loading={loading}>
           Login
         </Button>
       </Form.Item>
@@ -60,34 +66,49 @@ const LoginForm = () => {
 };
 
 const RegisterForm = () => {
-  
   const navigate = useNavigate();
+  const {user, setUser} = useAuth();
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
-  const HandleRegister = (values) => {
-    Service.Register(values)
-    .then(function (response){
-      alert("Register successfully.");
-      navigate("/network");
-      window.location.reload();
-    })
-    .catch(function (response){
-      alert("Register failed.");
-    })
-  }
+  const handleRegister = async () => {
+    setLoading(true);
+    try {
+      let u = await Service.register({
+        username: form.getFieldValue('username'),
+        password: form.getFieldValue('password'),
+        email: form.getFieldValue('email'),
+        nick: form.getFieldValue('nick'),
+      });
+      message.success(`Welcome, ${u.username}. You have successfully registered.`);
+      setUser(u);
+      navigate('/');
+    }
+    catch(e) {}
+    setLoading(false);
+  };
 
   return (
     <Form
+      form={form}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       initialValues={{ remember: true }}
       autoComplete="off"
       style={{ marginTop: '20px' }}
-      onFinish={ HandleRegister }
     >
       <Form.Item
           label="Username"
           name="username"
           rules={[{ required: true, message: 'Please input username' }]}
+      >
+        <Input prefix={<UserOutlined />} />
+      </Form.Item>
+      
+      <Form.Item
+          label="Nickname"
+          name="nick"
+          rules={[{ required: true, message: 'Please choose a nickname' }]}
       >
         <Input prefix={<UserOutlined />} />
       </Form.Item>
@@ -111,13 +132,22 @@ const RegisterForm = () => {
       <Form.Item
           label="Confirm"
           name="password2"
-          rules={[{ required: true, message: 'Please type password again to confirm it' }]}
+          rules={[
+            { required: true, message: 'Please type password again to confirm it' },
+            ({ getFieldValue }) => ({
+              async validator(_, value) {
+                if(value && getFieldValue('password') !== value) {
+                  throw new Error('The two passwords that you entered do not match.');
+                }
+              }
+            })
+          ]}
       >
         <Input.Password prefix={<LockOutlined />} />
       </Form.Item>
       
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" onClick={handleRegister} loading={loading}>
           Register Now
         </Button>
       </Form.Item>
@@ -127,8 +157,12 @@ const RegisterForm = () => {
 
 const Login = () => {
   const [onRegister, setOnRegister] = useState(true);
+  const {user} = useAuth();
   return (
     <Card title="Log in or sign up to continue" style={{margin: '20px'}}>
+      { user !== null ? (
+          <Alert message={`You are already logged in as ${user.username}. Continuing will log you out of current account.`} type="info" showIcon />
+      ) : null }
       <Menu
         mode="horizontal"
         selectedKeys={[onRegister ? 'register' : 'login']}

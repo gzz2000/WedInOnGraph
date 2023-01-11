@@ -10,6 +10,8 @@ import Login from './login';
 import Home from './home';
 import Network from './network';
 import Explore from './explore';
+import SearchUser from './search_user';
+import { AuthProvider } from './context_auth';
 
 const router = createBrowserRouter([
   {
@@ -21,12 +23,16 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: '/network',
-        element: <Network />
-      },
-      {
         path: '/explore',
         element: <Explore />
+      },
+      {
+        path: '/search_user',
+        element: <SearchUser />
+      },
+      {
+        path: '/network/:username',
+        element: <Network />
       },
       {
         path: '/login',
@@ -38,6 +44,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('container')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

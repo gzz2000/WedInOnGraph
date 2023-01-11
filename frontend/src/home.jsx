@@ -3,54 +3,26 @@ import { Row, Col, Card, Space, Alert, Typography, Button, Input, List, Modal, n
 import { Link } from "react-router-dom";
 import { ReloadOutlined, UserOutlined, LikeOutlined, LikeFilled, SendOutlined, DeleteOutlined, PlusOutlined, ExclamationCircleOutlined, SmileOutlined } from '@ant-design/icons';
 import Service from './service';
+import Follow from "./utils"
 import { useRef } from 'react';
 
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
-const PostPanels = () => {
-  const user = Service.getCurrentUser();
-  const posts = Service.getPosts(user);
-  return postItems = posts.map(post => 
-      <Card
-        size="small"
-        type="inner"
-        title={ <><UserOutlined /> <a>{posts["author"]}</a> { posts["author"]==user && <>(you)</> } </> }
-        extra={
-          posts["username"]==user &&
-          // todo: delete the item
-          <Button
-            danger={true}
-                    style={{ margin: "-4px -15px" }}
-                    type="link"
-                    icon={<DeleteOutlined />}
-            >Delete</Button>
-        }
-      >
-        <Paragraph
-          style={{ fontSize: '16px' }}
-        >
-          {posts["content"]}
-        </Paragraph>
-        {/* todo: track pred "like" */}
-        <div style={{ marginBottom: '-8px', marginLeft: '-8px' }}>
-          <Button type="text" icon={<LikeFilled />} />
-          <a>gzz2</a>
-        </div>
-      </Card>
-    )
-}
-
 const Home = () => {
   const [content, setContent] = useState("");
   const [user, setUser] = useState("");
+  const [toFollow, setToFollow] = useState([]);
   useEffect(() => {
     const currentUser = Service.getCurrentUser();
-    if (currentUser) setUser(currentUser);
+    if (currentUser) {
+      setUsername(currentUser);
+      Service.get2HopUnfollow(currentUser).then( res => { setToFollow(res); } );
+    }
   })
 
   const [api, contextHolder] = notification.useNotification();
-    const HandlePost = () => {
+  const HandlePost = () => {
     if(!user)
       Modal.warning({
         title: 'Please log in or register first!',
@@ -188,18 +160,14 @@ const Home = () => {
           <Card title="Person To Follow" bodyStyle={{ padding: '0px' }}>
             <List
               itemLayout="horizontal"
-              dataSource={['gzz3', 'gzz4']}
-              renderItem={user =>
+              dataSource={toFollow}
+              renderItem={other =>
                 <List.Item extra={
-                  <Button
-                    type="text"
-                          size="small"
-                          icon={<PlusOutlined />}
-                    >Follow</Button>
+                  <Follow me={user} other={other["name"]}/>
                 } >
                   <div>
-                    <UserOutlined /> <b>{user}</b><br />
-                    Followed by gzz2
+                    <UserOutlined /> <b>{other["name"]}</b><br />
+                    Followed by {other["agent"]}
                   </div>
                 </List.Item>
               }

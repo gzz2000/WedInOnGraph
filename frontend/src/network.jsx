@@ -4,7 +4,7 @@ import { CloseOutlined, MailOutlined, LockOutlined, EditOutlined, PlusOutlined, 
 const { Search } = Input;
 import { Row, Col } from 'antd';
 import Service from './service';
-import { RegisterForm } from './login';
+import {Follow} from "./utils"
 
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
@@ -12,11 +12,15 @@ const { TextArea } = Input;
 const Network = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
+    const [followers, setfFollowers] = useState([]);
+    const [followed, setfFollowed] = useState([]);
     useEffect(() => {
         const currentUser = Service.getCurrentUser();
         if (currentUser) {
             setUsername(currentUser);
             Service.getUserEmail(currentUser).then( res => { setEmail(res); } );
+            Service.getFollower(currentUser).then( res => { setfFollowers(res); } );
+            Service.getFollowed(currentUser).then( res => { setfFollowed(res); } );
         }
     });
 
@@ -142,7 +146,7 @@ const Network = () => {
                             */}
                         <List
                             itemLayout="horizontal"
-                            dataSource={['gzz3', 'gzz4']}
+                            dataSource={followers}
                             renderItem={user =>
                                 <List.Item
                                     style={{height: 80}}
@@ -174,7 +178,7 @@ const Network = () => {
                          */}
                         <List
                             itemLayout="horizontal"
-                            dataSource={['gzz3', 'gzz4']}
+                            dataSource={followed}
                             renderItem={user =>
                                 <List.Item
                                     style={{height: 80}}

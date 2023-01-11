@@ -56,8 +56,8 @@ class Service {
   setFollow(me, other) {
     return axios.post("setFollow", {me:me, other:other});
   }
-  setunFollow(me, other) {
-    return axios.post("setunFollow", {me:me, other:other});
+  setUnfollow(me, other) {
+    return axios.post("setUnfollow", {me:me, other:other});
   }
 }
 

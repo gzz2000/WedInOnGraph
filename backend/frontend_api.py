@@ -40,7 +40,7 @@ def setFollow():
     return params["username"]
 
 @app.route("/setFollow", methods=["POST"])
-def setunFollow():
+def setUnfollow():
     params = request.get_json()
     ret = set_unfollow(params["me"], params["other"])
     return params["username"]

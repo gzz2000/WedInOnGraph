@@ -24,7 +24,7 @@ def db_query(sparql):
 
 @validate_parameters
 def add_user(username: is_username(str), password: is_password(str),
-             email: is_email(str)):
+             email: is_email(str), nick: str = None):
     exist = db_query(f'SELECT ?email WHERE {{ \
     <weibo:user/{username}> <weibo:email> ?email \
     }}')
@@ -38,9 +38,13 @@ def add_user(username: is_username(str), password: is_password(str),
                              'a different email. '
                              'Try another one.')
 
+    if nick is None:
+        nick = username
+
     db_query(f'INSERT DATA {{ \
     <weibo:user/{username}> <weibo:password> "{hash_password(password)}"; \
-    <weibo:email> "{email}" \
+    <weibo:email> "{email}";
+    <weibo:nick> {json.dumps(str(nick))} \
     }}')
 
 @validate_parameters
